@@ -7,60 +7,22 @@
       </div>
       <v-card>
         <v-card-title class="headline">
-          Welcome to {{message}} Vuetiafy + Nuxt.js template asdasd
+           {{message}} 
+           <v-btn @click="reset">Reset </v-btn>
+           <v-btn @click="resetTricks">Reset Trick </v-btn>
+
         </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a asd Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
+        <div v-if="tricks">
+            <p v-for="t in tricks"> 
+              {{t.name}}
+            </p>
+        </div>
+
+        <div>
+          <v-input label="" v-model="trickName" />
+           <v-btn @click="saveTrick">Save Trick </v-btn>
+
+        </div>
         <v-card-actions>
           <v-spacer />
           <v-btn
@@ -80,6 +42,7 @@
 import Logo from "../components/Logo.vue"
 import VuetifyLogo from "../components/VuetifyLogo.vue"
 import Axios from "axios"
+import {mapState, mapActions, mapMutations} from "vuex"
 
 export default {
   components: {
@@ -87,14 +50,40 @@ export default {
     VuetifyLogo
   },
   data:()=>({
-    message:""
+    trickName:""
   }),
-  asyncData(payload:String){
-     return Axios.get("http://localhost:5000/api/home")
-      .then(({data})=>{
-            return { message :data}
-      })
+  
+  computed :{
+    ...mapState({
+    message:state => state.message
+  }),
+   ...mapState('tricks',{
+    tricks:state => state.tricks
+  })},
+  methods : {
+    
+    ...mapMutations([
+    'reset'
+  ]),
+    ...mapMutations({
+      resetTricks:'reset'
+    }),
+  ...mapActions('tricks',["createTricks"]),
+  async saveTrick(){
+    // await this.createTricks({trick:{name:this.trickName}})
+    console.log("testing")
+  }
+  
   },
+  // async fetch(){
+  //   await this.$store.dispatch(`fetchMessage`)
+  // }
+  // asyncData(payload:String){
+  //    return Axios.get("http://localhost:5000/api/home")
+  //     .then(({data})=>{
+  //           return { message :data}
+  //     })
+  // },
  
 }
 </script>
